@@ -17,7 +17,7 @@ var videoWidth = document.documentElement.clientWidth * rows,
 video.height = videoHeight;
 video.width = videoWidth;
 
-socket = io.connect('http://localhost:4009');
+socket = io.connect('http://localhost:3106');
 socket.on('video', videoCommand);
 
 document.addEventListener("DOMContentLoaded", init, false);
@@ -79,7 +79,13 @@ function init () {
 		socket.emit('video', data);
 	});
 
-	
+    document.getElementById('video').addEventListener('ended', function() {
+    	console.log('video ended');
+
+    	// socket.emit('sync', 'ready');
+    },false);
+
+
 	document.getElementById('submit').addEventListener('click', function() {
 
 		var row = document.getElementById("row").value;
