@@ -4,10 +4,9 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-
 app.use(express.static('public'));
 
-server.listen(3106);
+server.listen(3336);
 
 console.log("Socket server is running");
 
@@ -24,15 +23,20 @@ io.on('connection', function(socket) {
 		socket.broadcast.emit('video', data);
 	});
 
-	// socket.on('sync'), function(data) {
-	// 	readyClient++;
-	// 	console.log('Client is ready.');
-	// 	console.log('Ready Clients: ' + readyClient + '/' + clientCounter);
+	socket.on('sync', function(data) {
+		readyClient++;
+		console.log('Client is ready.');
+		console.log('Ready Clients: ' + readyClient + '/' + clientCounter);
+	
+		if (readyClient == clientCounter) {
+			console.log('Play Video');
 
-	// 	if (readyClient == totalClient) {
-	// 		console.log('ready to play');
-	// 	}
-	// }
+			data.serverTime = new Date().getTime();
+
+			io.emit('sync', data);
+			readyClient = 0;
+		}	
+	});
 
 	socket.on('disconnect', function() { 
 		clientCounter--; 
